@@ -66,7 +66,7 @@ pipeline {
                     <p>Build Status:
                     <b style="color:green;">SUCCESS</b></p>
 
-                    <p><b>Committed By:</b> ${env.COMMITTED_BY}</p>
+                    <p><b>Committed By:</b> ${env.COMMITTED_BY ?: 'Unknown'}</p>
 
                     <p><b>Branch:</b> ${env.DEPLOY_BRANCH}</p>
 
@@ -97,7 +97,7 @@ pipeline {
                     <p>Build Status:
                     <b style="color:red;">FAILED</b></p>
 
-                    <p><b>Committed By:</b> ${env.COMMITTED_BY}</p>
+                    <p><b>Committed By:</b> ${env.COMMITTED_BY ?: 'Unknown'}</p>
 
                     <p><b>Branch:</b> ${env.DEPLOY_BRANCH}</p>
 
