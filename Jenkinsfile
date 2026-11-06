@@ -7,7 +7,6 @@ pipeline {
     }
 
     environment {
-        COMMITTED_BY = 'Unknown'
         DEPLOY_BRANCH = 'subbranch'
     }
 
@@ -34,13 +33,7 @@ pipeline {
             ).trim()
 
             echo "Retrieved Git Author: [${author}]"
-
-            if (author?.trim()) {
-                env.COMMITTED_BY = author.trim()
-            } else {
-                env.COMMITTED_BY = 'Unknown'
-            }
-
+            env.COMMITTED_BY = author ? author: 'Unknown'
             echo "FINAL COMMITTED BY: ${env.COMMITTED_BY}"
         }
     }
