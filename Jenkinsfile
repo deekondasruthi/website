@@ -20,9 +20,9 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'Fargin-Entity-Cable',
-                    credentialsId: 'thivakaran',
-                    url: 'https://github.com/Baabujiventuress/FarginConnect_Angular_Admin_Panel'
+                git branch: 'sunbranch',
+                    credentialsId: 'sruthi.d',
+                    url: 'https://github.com/deekondasruthi/website.git'
 
                 script {
                     env.COMMITTED_BY = sh(
@@ -48,18 +48,6 @@ pipeline {
         stage('Build Angular') {
             steps {
                 sh 'ng b'
-            }
-        }
-
-        stage('Stop Docker Container') {
-            steps {
-                sh 'docker stop nginx-applications'
-            }
-        }
-
-        stage('Run Container') {
-            steps {
-                sh 'docker-compose -f /home/docker-compose/frontend-application.yaml up -d'
             }
         }
     }
