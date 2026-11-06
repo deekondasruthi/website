@@ -17,11 +17,7 @@ pipeline {
                 cleanWs(deleteDirs: true)
             }
         }
-        stage('build') {
-            steps {
-                sh 'ng b'
-            }
-        }
+        
 
         stage('Checkout Code') {
     steps {
@@ -53,6 +49,11 @@ pipeline {
                     echo "Repository files:"
                     ls -la
                 '''
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'ng b'
             }
         }
     }
