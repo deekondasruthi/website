@@ -20,37 +20,33 @@ pipeline {
         }
 
         stage('Checkout Code') {
-            steps {
-                git branch: 'subbranch',
-                    credentialsId: 'sruthi.d',
-                    url: 'https://github.com/deekondasruthi/website.git'
+    steps {
+        git branch: 'subbranch',
+            credentialsId: 'sruthi.d',
+            url: 'https://github.com/deekondasruthi/website.git'
 
-                script {
-                    def author = sh(
-                        script: "git log -1 --format='%an'",
-                        returnStdout: true
-                    ).trim()
+        script {
+            echo "Checking latest Git commit author..."
 
-                    def authorEmail = sh(
-                        script: "git log -1 --format='%ae'",
-                        returnStdout: true
-                    ).trim()
+            sh 'git log -1 --format=fuller'
 
-                    if (author) {
-                        env.COMMITTED_BY = author
-                        if (authorEmail) {
-                            env.COMMITTED_BY =
-                                "${author} <${authorEmail}>"
-                        }
-                    } else {
-                        env.COMMITTED_BY = 'Unknown'
-                    }
+            def author = sh(
+                script: 'git log -1 --pretty=format:%an',
+                returnStdout: true
+            ).trim()
 
-                    echo "FINAL COMMITTED BY: ${env.COMMITTED_BY}"
-                    echo "BRANCH: ${env.DEPLOY_BRANCH}"
-                }
+            echo "Git Author Retrieved: [${author}]"
+
+            env.COMMITTED_BY = author.trim()
+
+            if (!env.COMMITTED_BY) {
+                env.COMMITTED_BY = 'Unknown'
             }
+
+            echo "FINAL COMMITTED BY: ${env.COMMITTED_BY}"
         }
+    }
+}
 
         stage('Check Project Structure') {
             steps {
