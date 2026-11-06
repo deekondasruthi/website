@@ -17,6 +17,11 @@ pipeline {
                 cleanWs(deleteDirs: true)
             }
         }
+        stage('build') {
+            steps {
+                sh 'ng b'
+            }
+        }
 
         stage('Checkout Code') {
     steps {
