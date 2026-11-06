@@ -26,20 +26,18 @@ pipeline {
             url: 'https://github.com/deekondasruthi/website.git'
 
         script {
-            echo "Checking latest Git commit author..."
-
-            sh 'git log -1 --format=fuller'
+            echo "Retrieving latest Git commit details..."
 
             def author = sh(
-                script: 'git log -1 --pretty=format:%an',
+                script: "git show -s --format='%an' HEAD",
                 returnStdout: true
             ).trim()
 
-            echo "Git Author Retrieved: [${author}]"
+            echo "Retrieved Git Author: [${author}]"
 
-            env.COMMITTED_BY = author.trim()
-
-            if (!env.COMMITTED_BY) {
+            if (author?.trim()) {
+                env.COMMITTED_BY = author.trim()
+            } else {
                 env.COMMITTED_BY = 'Unknown'
             }
 
