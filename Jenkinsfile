@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         COMMITTED_BY = 'Unknown'
+        DEPLOY_BRANCH = 'subbranch'
     }
 
     stages {
@@ -20,13 +21,13 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'sunbranch',
+                git branch: 'subbranch',
                     credentialsId: 'sruthi.d',
                     url: 'https://github.com/deekondasruthi/website.git'
 
                 script {
                     env.COMMITTED_BY = sh(
-                        script: "git log -1 --format='%an'",
+                        script: "git log -1 --format='%an <%ae>'",
                         returnStdout: true
                     ).trim()
 
@@ -34,7 +35,10 @@ pipeline {
                         env.COMMITTED_BY = 'Unknown'
                     }
 
+                    echo "================================"
                     echo "Committed By: ${env.COMMITTED_BY}"
+                    echo "Branch: ${env.DEPLOY_BRANCH}"
+                    echo "================================"
                 }
             }
         }
@@ -66,7 +70,7 @@ pipeline {
 
                     <p>Using the above base URL, you can verify UI deployment and test all frontend features.</p>
 
-                    <p>Branch: ${env.GIT_BRANCH}</p>
+                    <p><b>Branch:</b> ${env.DEPLOY_BRANCH}</p>
 
                     <br/>
                     <p>Regards,</p>
@@ -90,7 +94,7 @@ pipeline {
 
                     <p><b>Committed By:</b> ${env.COMMITTED_BY}</p>
 
-                    <p>Branch: ${env.GIT_BRANCH}</p>
+                    <p><b>Branch:</b> ${env.DEPLOY_BRANCH}</p>
 
                     <p>Please review the attached build log file to identify the issue.</p>
 
