@@ -26,20 +26,50 @@ pipeline {
                     url: 'https://github.com/deekondasruthi/website.git'
 
                 script {
-                    env.COMMITTED_BY = sh(
-                        script: "git log -1 --format='%an <%ae>'",
+                    echo "Checking Git commit details..."
+
+                    sh 'git log -1 --format=fuller'
+
+                    def author = sh(
+                        script: 'git log -1 --format=%an',
                         returnStdout: true
                     ).trim()
 
-                    if (!env.COMMITTED_BY) {
-                        env.COMMITTED_BY = 'Unknown'
-                    }
+                    def authorEmail = sh(
+                        script: 'git log -1 --format=%ae',
+                        returnStdout: true
+                    ).trim()
 
-                    echo "================================"
-                    echo "Committed By: ${env.COMMITTED_BY}"
-                    echo "Branch: ${env.DEPLOY_BRANCH}"
-                    echo "================================"
+                    def committer = sh(
+                        script: 'git log -1 --format=%cn',
+                        returnStdout: true
+                    ).trim()
+
+                    env.COMMITTED_BY = author ?
+                        "${author} <${authorEmail}>" :
+                        (committer ?: 'Unknown')
+
+                    echo "Git Author: ${author}"
+                    echo "Git Author Email: ${authorEmail}"
+                    echo "Git Committer: ${committer}"
+                    echo "FINAL COMMITTED BY: ${env.COMMITTED_BY}"
+                    echo "BRANCH: ${env.DEPLOY_BRANCH}"
                 }
+            }
+        }
+
+        stage('Check Project Structure') {
+            steps {
+                sh '''
+                    echo "Current directory:"
+                    pwd
+
+                    echo "Repository files:"
+                    ls -la
+
+                    echo "Searching for package.json:"
+                    find . -name package.json -not -path '*/node_modules/*' -print
+                '''
             }
         }
 
@@ -51,7 +81,7 @@ pipeline {
 
         stage('Build Angular') {
             steps {
-                sh 'ng b'
+                sh 'npx ng build'
             }
         }
     }
